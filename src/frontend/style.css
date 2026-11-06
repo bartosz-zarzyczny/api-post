@@ -27,6 +27,19 @@ h1 span { color: #c6f46b; }
 .heading-decoration span { color: #34442c; }
 .section-label { display: block; color: #cbd4c8; margin-bottom: 12px; }
 .section-label span { color: #5b6659; margin-left: 5px; }
+.tabs-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.request-tabs { display: flex; gap: 8px; overflow-x: auto; min-width: 0; padding: 2px 0; }
+.request-tab { display: flex; align-items: center; background: #191d19; border: 1px solid #343d32; border-radius: 6px; flex: 0 0 auto; }
+.request-tab.active { border-color: #c6f46b; }
+.request-tab button { background: transparent; color: #cbd4c8; min-height: 38px; padding: 0 12px; }
+.request-tab button:hover { background: #252e20; }
+.request-tab .close-tab { font-size: 18px; padding: 0 10px; }
+.add-tab { min-height: 40px; }
+.tabs-files { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 20px; }
+.tabs-files button, .tabs-files select { min-height: 40px; }
+.tabs-files label { color: #a3ad9f; font-size: 12px; margin-left: 8px; }
+.tabs-status { color: #c6f46b; margin-bottom: 20px; font-size: 13px; }
+.tabs-message { color: #ffb1aa; background: #35221f; border: 1px solid #693a35; border-radius: 5px; padding: 12px; margin-bottom: 20px; font-size: 13px; }
 .curl-import { border: 1px solid #343d32; border-radius: 9px; background: #131713; margin: 0 0 26px; padding: 0; color: #dce8d7; }
 .curl-import > summary { padding: 16px 20px; font-size: 13px; font-weight: 700; }
 .curl-content { border-top: 1px solid #292f28; padding: 18px 20px; }
@@ -92,6 +105,12 @@ footer b { color: #c6f46b; }
 
 :root[data-theme="orange"] { color-scheme: light; background: #f4f7f7; color: #111; }
 [data-theme="orange"] .topbar, [data-theme="orange"] footer { background: #fff; border-color: #ccc; }
+[data-theme="orange"] .request-tab { background: #fff; border-color: #a0b9b9; }
+[data-theme="orange"] .request-tab.active { border-color: #a84000; }
+[data-theme="orange"] .request-tab button { background: transparent; color: #111; }
+[data-theme="orange"] .request-tab button:hover { background: #ebefef; }
+[data-theme="orange"] .tabs-files label { color: #555; }
+[data-theme="orange"] .tabs-status { color: #216333; }
 [data-theme="orange"] .brand-mark, [data-theme="orange"] button { background: #ff6200; color: #111; }
 [data-theme="orange"] button:hover { background: #e85800; }
 [data-theme="orange"] .brand-accent, [data-theme="orange"] h1 span, [data-theme="orange"] .panel-icon, [data-theme="orange"] .curl-message.success { color: #a84000; }
