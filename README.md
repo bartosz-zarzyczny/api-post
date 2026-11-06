@@ -24,7 +24,13 @@ Use the **Theme** selector in the top bar to switch between the original Classic
 
 Select a method, enter the full URL, and optionally add headers (one per line, in the format `Name: value`). You can provide a request body for methods other than GET and HEAD. Set the `Content-Type` header yourself if the API requires it. Responses with HTTP error codes are displayed like other responses; network errors are shown separately.
 
-Requests are made by the tinyjs backend, without browser CORS restrictions. The application does not save request data except API tokens explicitly saved as described below. The response size is the number of bytes in its UTF-8-encoded text, and the duration includes reading the response body.
+Use **+ New request** to open additional request tabs. Each tab keeps its own request fields, cURL import text and response, including requests that finish while another tab is active. Select a tab to return to it; use its close button to remove it. Closing a tab with content requires confirmation.
+
+Use **Save** to save the current tab, or **Save As** to choose a new name. Save As asks before replacing an existing file; Save updates the tab's existing file. Select a file under **Saved requests** and click **Open** to open it in a new tab, or **Refresh** to reload the list after external changes. Wait for a running request to finish before saving. Unsaved tabs are lost when the app closes.
+
+Saved tabs are JSON files in `tabs` under the application's working directory, created on the first save. They contain the request fields, imported cURL text, and the last response or error. They are **plain text and may contain tokens or sensitive response data**; protect the folder, avoid sharing it, and do not commit it. The folder is ignored by Git. External changes or concurrent app instances are not coordinated; Save overwrites the associated file.
+
+Requests are made by the tinyjs backend, without browser CORS restrictions. Request data and API tokens are saved only when explicitly requested. The response size is the number of bytes in its UTF-8-encoded text, and the duration includes reading the response body.
 
 ### API tokens
 

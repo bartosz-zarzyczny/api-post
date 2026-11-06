@@ -1,8 +1,20 @@
 import { createAuthStore } from './auth-store.js';
+import { createTabStore } from './tab-store.js';
 
 const authStore = createAuthStore(globalThis.tjs);
+const tabStore = createTabStore(globalThis.tjs);
 
 export const api = {
+  async listSavedTabs() {
+    return tabStore.list();
+  },
+  async loadSavedTab({ name }) {
+    return tabStore.load(name);
+  },
+  async saveRequestTab({ name, data, overwrite }) {
+    if (typeof overwrite !== 'boolean') throw new Error('Invalid save mode.');
+    await tabStore.save(name, data, overwrite);
+  },
   async listAuthKeys() {
     return authStore.list();
   },

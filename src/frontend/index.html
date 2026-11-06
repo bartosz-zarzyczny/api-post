@@ -32,6 +32,20 @@
         <div class="heading-decoration" aria-hidden="true">{ <span> }</span></div>
       </div>
 
+      <div class="tabs-bar">
+        <nav id="request-tabs" class="request-tabs" aria-label="Request tabs"></nav>
+        <button id="add-request-tab" type="button" class="add-tab">+ New request</button>
+      </div>
+      <div class="tabs-files">
+        <button id="tab-save" type="button">Save</button>
+        <button id="tab-save-as" type="button">Save As</button>
+        <label for="saved-tabs">Saved requests</label>
+        <select id="saved-tabs"><option value="">Select a saved request</option></select>
+        <button id="tab-open" type="button">Open</button>
+        <button id="tab-refresh" type="button">Refresh</button>
+      </div>
+      <div id="tabs-message" class="tabs-message" role="alert" hidden></div>
+      <div id="tabs-status" class="tabs-status" role="status" aria-live="polite" hidden></div>
       <form id="request-form">
         <details class="curl-import">
           <summary>Import cURL command</summary>
@@ -138,6 +152,7 @@
   </div>
   <script src="curl.js"></script>
   <script src="theme.js"></script>
+  <script src="tabs.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
