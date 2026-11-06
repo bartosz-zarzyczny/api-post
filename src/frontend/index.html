@@ -25,6 +25,33 @@
       </div>
 
       <form id="request-form">
+        <details class="curl-import">
+          <summary>Import cURL command</summary>
+          <div class="curl-content">
+            <label for="curl-command">Paste a cURL command</label>
+            <textarea id="curl-command" spellcheck="false" placeholder="curl 'https://api.example.com/v1/resource' -H 'Accept: application/json'"></textarea>
+            <div class="curl-actions">
+              <p class="field-help">Import fills the request fields without running the command or sending a request.</p>
+              <button id="curl-import" type="button">Import request</button>
+            </div>
+            <div id="curl-message" class="curl-message" role="status" aria-live="polite" hidden></div>
+          </div>
+        </details>
+        <details class="curl-import">
+          <summary>Export as cURL</summary>
+          <div class="curl-content">
+            <label for="curl-export-output">Generated cURL command</label>
+            <textarea id="curl-export-output" readonly spellcheck="false" placeholder="Generate a command from the current request."></textarea>
+            <div class="curl-actions">
+              <p class="field-help">Uses POSIX shell syntax. The command may contain credentials.</p>
+              <div class="curl-buttons">
+                <button id="curl-export" type="button">Generate command</button>
+                <button id="curl-copy" type="button" disabled>Copy command</button>
+              </div>
+            </div>
+            <div id="curl-export-message" class="curl-message" role="status" aria-live="polite" hidden></div>
+          </div>
+        </details>
         <label class="section-label" for="url">REQUEST URL <span>01</span></label>
         <div class="request-bar">
           <select id="method" aria-label="HTTP method">
@@ -80,6 +107,7 @@
     </main>
     <footer><span><span class="footer-dot"></span> READY TO GO</span><span>MADE FOR BUILDERS <b>✳</b></span></footer>
   </div>
+  <script src="curl.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

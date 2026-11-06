@@ -56,8 +56,71 @@ function renderBody(text) {
   output.append(document.createTextNode(formatted.slice(position)));
 }
 
+function clearCurlExport() {
+  $('curl-export-output').value = '';
+  $('curl-copy').disabled = true;
+  $('curl-export-message').hidden = true;
+}
+
+for (const id of ['url', 'method', 'headers', 'body']) {
+  $(id).addEventListener('input', clearCurlExport);
+  $(id).addEventListener('change', clearCurlExport);
+}
+
 method.addEventListener('change', updateBodyState);
 updateBodyState();
+
+$('curl-import').addEventListener('click', () => {
+  const message = $('curl-message');
+  try {
+    const request = parseCurl($('curl-command').value);
+    $('url').value = request.url;
+    method.value = request.method;
+    $('headers').value = request.headers;
+    body.value = request.body;
+    updateBodyState();
+    clearCurlExport();
+    message.textContent = 'Request imported. Review it before sending.';
+    message.className = 'curl-message success';
+  } catch (error) {
+    message.textContent = `Could not import cURL: ${error instanceof Error ? error.message : String(error)}`;
+    message.className = 'curl-message import-error';
+  }
+  message.hidden = false;
+});
+
+$('curl-export').addEventListener('click', () => {
+  const message = $('curl-export-message');
+  clearCurlExport();
+  try {
+    $('curl-export-output').value = exportCurl({
+      url: $('url').value.trim(),
+      method: method.value,
+      headers: parseHeaders($('headers').value),
+      body: body.value,
+    });
+    $('curl-copy').disabled = false;
+    message.textContent = 'Command generated. Review it before sharing or running it.';
+    message.className = 'curl-message success';
+  } catch (error) {
+    message.textContent = `Could not export cURL: ${error instanceof Error ? error.message : String(error)}`;
+    message.className = 'curl-message import-error';
+  }
+  message.hidden = false;
+});
+
+$('curl-copy').addEventListener('click', async () => {
+  const message = $('curl-export-message');
+  try {
+    await tiny.clipboard.write({ text: $('curl-export-output').value });
+    message.textContent = 'Command copied to the clipboard.';
+    message.className = 'curl-message success';
+  } catch (error) {
+    message.textContent = `Could not copy command: ${error instanceof Error ? error.message : String(error)}`;
+    message.className = 'curl-message import-error';
+  }
+  message.hidden = false;
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
