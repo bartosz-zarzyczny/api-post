@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API Post</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">↗</span><span>api<span class="brand-accent">post</span></span></div>
+      <span class="topbar-label">YOUR HTTP CLIENT</span>
+      <span class="topbar-badge"><span></span> tinyjs desktop</span>
+    </header>
+
+    <main>
+      <div class="heading">
+        <div>
+          <div class="eyebrow"><span></span> REQUEST WORKSPACE</div>
+          <h1>Send. Explore. <span>Build.</span></h1>
+          <p>Everything you need to interact with APIs, in one place.</p>
+        </div>
+        <div class="heading-decoration" aria-hidden="true">{ <span> }</span></div>
+      </div>
+
+      <form id="request-form">
+        <label class="section-label" for="url">REQUEST URL <span>01</span></label>
+        <div class="request-bar">
+          <select id="method" aria-label="HTTP method">
+            <option>GET</option><option>POST</option><option>PUT</option>
+            <option>PATCH</option><option>DELETE</option><option>HEAD</option>
+          </select>
+          <input id="url" type="url" placeholder="https://api.example.com/v1/resource" required spellcheck="false" autocomplete="off">
+          <button id="send" type="submit">Send request <span>↗</span></button>
+        </div>
+        <div class="request-hint"><span class="hint-icon">i</span> Enter the full URL and select a request method.</div>
+
+        <div class="workspace">
+          <section class="panel request-panel">
+            <div class="panel-heading">
+              <div><span class="panel-icon">⌘</span><h2>Request</h2></div>
+              <span class="panel-caption">CONFIGURATION</span>
+            </div>
+            <div class="editor-section">
+              <div class="editor-heading"><label for="headers">Headers</label><span>ONE PER LINE</span></div>
+              <textarea id="headers" spellcheck="false" placeholder="Content-Type: application/json&#10;Authorization: Bearer token"></textarea>
+              <p class="field-help">Format: <code>Name: value</code></p>
+            </div>
+            <div class="editor-section body-section">
+              <div class="editor-heading"><label for="body">Request body</label><span>RAW</span></div>
+              <textarea id="body" spellcheck="false" placeholder="{&#10;  &quot;message&quot;: &quot;Hello, API!&quot;&#10;}"></textarea>
+              <p class="field-help" id="body-help">The body is sent for methods other than GET and HEAD.</p>
+            </div>
+          </section>
+
+          <section class="panel response-panel">
+            <div class="panel-heading">
+              <div><span class="panel-icon response-icon">⌁</span><h2>Response</h2></div>
+              <span id="response-label" class="panel-caption">WAITING</span>
+            </div>
+            <div id="response-meta" class="response-meta" hidden>
+              <span id="status" class="status"></span>
+              <span id="duration"></span><span id="size"></span>
+            </div>
+            <div id="empty-state" class="empty-state">
+              <div class="empty-icon"><span>{ }</span></div>
+              <h3>Your response will appear here</h3>
+              <p>Configure your request and click “Send request” to see the result.</p>
+            </div>
+            <div id="result" class="result" hidden>
+              <div class="result-heading"><span>RESPONSE BODY</span><span id="format"></span></div>
+              <pre id="response-body"></pre>
+              <details id="response-headers"><summary>Response headers</summary><pre id="response-headers-content"></pre></details>
+            </div>
+            <div id="error" class="error" role="alert" hidden></div>
+          </section>
+        </div>
+      </form>
+    </main>
+    <footer><span><span class="footer-dot"></span> READY TO GO</span><span>MADE FOR BUILDERS <b>✳</b></span></footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
