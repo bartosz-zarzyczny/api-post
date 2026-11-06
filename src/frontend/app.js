@@ -3,6 +3,13 @@ const form = $('request-form');
 const method = $('method');
 const body = $('body');
 
+setupTheme({
+  root: document.documentElement,
+  selector: $('theme-select'),
+  message: $('theme-message'),
+  store: tiny.store,
+});
+
 function updateBodyState() {
   const disabled = method.value === 'GET' || method.value === 'HEAD';
   body.disabled = disabled;
@@ -69,6 +76,83 @@ for (const id of ['url', 'method', 'headers', 'body']) {
 
 method.addEventListener('change', updateBodyState);
 updateBodyState();
+
+function authMessage(text, isError = false) {
+  const message = $('auth-message');
+  message.textContent = text;
+  message.className = `curl-message ${isError ? 'import-error' : 'success'}`;
+  message.hidden = false;
+}
+
+async function refreshAuthKeys(selected = $('auth-saved').value) {
+  const names = await tiny.api.call('listAuthKeys');
+  const select = $('auth-saved');
+  select.replaceChildren(new Option('Select a token', ''));
+  for (const name of names) select.add(new Option(name, name));
+  if (names.includes(selected)) select.value = selected;
+}
+
+async function withAuthAction(action) {
+  const buttons = ['auth-refresh', 'auth-load', 'auth-save', 'auth-use'].map($);
+  buttons.forEach((button) => { button.disabled = true; });
+  try {
+    await action();
+  } catch (error) {
+    authMessage(`Token operation failed: ${error instanceof Error ? error.message : String(error)}`, true);
+  } finally {
+    buttons.forEach((button) => { button.disabled = false; });
+  }
+}
+
+$('auth-panel').addEventListener('toggle', () => {
+  if ($('auth-panel').open) {
+    withAuthAction(async () => {
+      await refreshAuthKeys();
+      authMessage('Token list loaded.');
+    });
+  }
+});
+
+$('auth-saved').addEventListener('change', () => {
+  $('auth-name').value = $('auth-saved').value;
+  $('auth-token').value = '';
+});
+
+$('auth-refresh').addEventListener('click', () => withAuthAction(async () => {
+  await refreshAuthKeys();
+  authMessage('Token list loaded.');
+}));
+
+$('auth-load').addEventListener('click', () => withAuthAction(async () => {
+  const name = $('auth-saved').value;
+  if (!name) throw new Error('Select a saved token.');
+  const token = await tiny.api.call('loadAuthKey', { name });
+  $('auth-name').value = name;
+  $('auth-token').value = token;
+  authMessage('Token loaded.');
+}));
+
+$('auth-save').addEventListener('click', () => withAuthAction(async () => {
+  const name = $('auth-name').value;
+  await tiny.api.call('saveAuthKey', { name, token: $('auth-token').value });
+  try {
+    await refreshAuthKeys(name);
+    authMessage('Token saved.');
+  } catch (error) {
+    authMessage(`Token saved, but the list could not be refreshed: ${error instanceof Error ? error.message : String(error)}`, true);
+  }
+}));
+
+$('auth-use').addEventListener('click', () => withAuthAction(async () => {
+  const token = $('auth-token').value;
+  if (!token || /[\r\n]/.test(token)) throw new Error('Enter or load a token without line breaks.');
+  const headers = parseHeaders($('headers').value);
+  const existing = Object.keys(headers).find((name) => name.toLowerCase() === 'authorization');
+  if (existing) delete headers[existing];
+  $('headers').value = [...Object.entries(headers).map(([name, value]) => `${name}: ${value}`), `Authorization: Bearer ${token}`].join('\n');
+  clearCurlExport();
+  authMessage('Authorization header updated. No request was sent.');
+}));
 
 $('curl-import').addEventListener('click', () => {
   const message = $('curl-message');

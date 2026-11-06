@@ -1,4 +1,17 @@
+import { createAuthStore } from './auth-store.js';
+
+const authStore = createAuthStore(globalThis.tjs);
+
 export const api = {
+  async listAuthKeys() {
+    return authStore.list();
+  },
+  async loadAuthKey({ name }) {
+    return authStore.load(name);
+  },
+  async saveAuthKey({ name, token }) {
+    await authStore.save(name, token);
+  },
   async sendRequest({ url, method, headers, body }) {
     const parsedUrl = new URL(url);
     if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {

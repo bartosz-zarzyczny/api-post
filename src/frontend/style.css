@@ -12,6 +12,10 @@ button, select { cursor: pointer; }
 .topbar-label, .topbar-badge, .eyebrow, .section-label, .panel-caption, .editor-heading span, .result-heading, footer { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; }
 .topbar-label { color: #626b61; border-left: 1px solid #343a34; padding-left: 28px; }
 .topbar-badge { margin-left: auto; color: #a3ad9f; border: 1px solid #30372e; border-radius: 20px; padding: 8px 11px; letter-spacing: 0; }
+.theme-control { display: flex; align-items: center; gap: 8px; margin-left: auto; color: #a3ad9f; font-size: 12px; }
+.theme-control select { min-height: 34px; padding: 0 10px; font-size: 11px; }
+.topbar-badge { margin-left: 0; }
+.theme-message { padding: 10px 6%; color: #ffb1aa; background: #35221f; font-size: 12px; }
 .topbar-badge span, .footer-dot, .eyebrow span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #c6f46b; margin-right: 7px; }
 main { width: min(1320px, 88%); margin: 0 auto; flex: 1; }
 .heading { display: flex; align-items: center; justify-content: space-between; padding: 54px 0 42px; }
@@ -31,6 +35,9 @@ h1 span { color: #c6f46b; }
 .curl-actions .field-help { margin: 0; }
 .curl-actions button { min-height: 40px; }
 .curl-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.auth-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.auth-fields input, .auth-fields select { width: 100%; min-height: 42px; border: 1px solid #2a3229; border-radius: 5px; background: #0d110e; padding: 0 12px; }
+.auth-fields select { color: #edf2e8; }
 .curl-message { margin-top: 12px; font-size: 12px; overflow-wrap: anywhere; }
 .curl-message.success { color: #c6f46b; }
 .curl-message.import-error { color: #ffb1aa; }
@@ -82,4 +89,38 @@ summary { cursor: pointer; }
 .error { margin: 22px; padding: 14px; color: #ffb1aa; background: #35221f; border: 1px solid #693a35; border-radius: 5px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 footer { border-top: 1px solid #252a26; padding: 20px 6%; display: flex; justify-content: space-between; color: #73806e; font-size: 9px; }
 footer b { color: #c6f46b; }
-@media (max-width: 760px) { .topbar { padding: 0 5%; } .topbar-label { display: none; } main { width: 90%; } .heading { padding: 40px 0 32px; } .heading-decoration { display: none; } .workspace { grid-template-columns: 1fr; } .panel { min-height: 360px; } .request-bar { flex-wrap: wrap; } .request-bar input { min-height: 48px; } .request-bar button { width: 100%; min-height: 45px; } .curl-actions { align-items: stretch; flex-direction: column; } }
+
+:root[data-theme="orange"] { color-scheme: light; background: #f4f7f7; color: #111; }
+[data-theme="orange"] .topbar, [data-theme="orange"] footer { background: #fff; border-color: #ccc; }
+[data-theme="orange"] .brand-mark, [data-theme="orange"] button { background: #ff6200; color: #111; }
+[data-theme="orange"] button:hover { background: #e85800; }
+[data-theme="orange"] .brand-accent, [data-theme="orange"] h1 span, [data-theme="orange"] .panel-icon, [data-theme="orange"] .curl-message.success { color: #a84000; }
+[data-theme="orange"] .topbar-label, [data-theme="orange"] .topbar-badge, [data-theme="orange"] .theme-control, [data-theme="orange"] .heading p, [data-theme="orange"] .request-hint, [data-theme="orange"] .field-help, [data-theme="orange"] .panel-caption, [data-theme="orange"] .editor-heading span, [data-theme="orange"] .result-heading, [data-theme="orange"] footer { color: #555; }
+[data-theme="orange"] .topbar-badge { border-color: #ccc; }
+[data-theme="orange"] .topbar-badge span, [data-theme="orange"] .footer-dot, [data-theme="orange"] .eyebrow span { background: #ff6200; }
+[data-theme="orange"] .eyebrow { color: #a84000; }
+[data-theme="orange"] .heading-decoration { color: #d3d3d3; }
+[data-theme="orange"] .heading-decoration span { color: #ff6200; }
+[data-theme="orange"] .section-label { color: #111; }
+[data-theme="orange"] .section-label span { color: #666; }
+[data-theme="orange"] .curl-import, [data-theme="orange"] .panel { background: #fff; border-color: #ccc; color: #111; }
+[data-theme="orange"] .curl-content, [data-theme="orange"] .panel-heading, [data-theme="orange"] .response-meta, [data-theme="orange"] details { border-color: #ccc; }
+[data-theme="orange"] .request-bar { background: #fff; border-color: #a0b9b9; }
+[data-theme="orange"] .request-bar:focus-within, [data-theme="orange"] textarea:focus { border-color: #a84000; }
+[data-theme="orange"] select, [data-theme="orange"] input, [data-theme="orange"] textarea { color: #111; }
+[data-theme="orange"] select { background: #ebefef; }
+[data-theme="orange"] textarea, [data-theme="orange"] .auth-fields input, [data-theme="orange"] .auth-fields select { background: #f4f7f7; border-color: #a0b9b9; color: #111; }
+[data-theme="orange"] input::placeholder, [data-theme="orange"] textarea::placeholder { color: #666; }
+[data-theme="orange"] .field-help code, [data-theme="orange"] .response-meta, [data-theme="orange"] details { color: #444; }
+[data-theme="orange"] .empty-icon { background: #fff3eb; border-color: #ff6200; color: #a84000; }
+[data-theme="orange"] .empty-state p { color: #555; }
+[data-theme="orange"] pre { color: #111; }
+[data-theme="orange"] .json-key { color: #0031ba; }
+[data-theme="orange"] .json-string { color: #216333; }
+[data-theme="orange"] .json-number { color: #9b3600; }
+[data-theme="orange"] .json-literal { color: #713e92; }
+[data-theme="orange"] .status-ok { color: #216333; background: #e5f4e8; }
+[data-theme="orange"] .status-error { color: #a52219; background: #fce8e7; }
+[data-theme="orange"] .curl-message.import-error { color: #a52219; }
+[data-theme="orange"] footer b { color: #a84000; }
+@media (max-width: 760px) { .topbar { padding: 0 5%; gap: 12px; } .topbar-label, .topbar-badge { display: none; } main { width: 90%; } .heading { padding: 40px 0 32px; } .heading-decoration { display: none; } .workspace, .auth-fields { grid-template-columns: 1fr; } .panel { min-height: 360px; } .request-bar { flex-wrap: wrap; } .request-bar input { min-height: 48px; } .request-bar button { width: 100%; min-height: 45px; } .curl-actions { align-items: stretch; flex-direction: column; } }

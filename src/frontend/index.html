@@ -11,8 +11,16 @@
     <header class="topbar">
       <div class="brand"><span class="brand-mark">↗</span><span>api<span class="brand-accent">post</span></span></div>
       <span class="topbar-label">YOUR HTTP CLIENT</span>
+      <div class="theme-control">
+        <label for="theme-select">Theme</label>
+        <select id="theme-select" disabled>
+          <option value="classic">Classic</option>
+          <option value="orange">Orange</option>
+        </select>
+      </div>
       <span class="topbar-badge"><span></span> tinyjs desktop</span>
     </header>
+    <div id="theme-message" class="theme-message" role="status" aria-live="polite" hidden></div>
 
     <main>
       <div class="heading">
@@ -50,6 +58,27 @@
               </div>
             </div>
             <div id="curl-export-message" class="curl-message" role="status" aria-live="polite" hidden></div>
+          </div>
+        </details>
+        <details class="curl-import" id="auth-panel">
+          <summary>API tokens</summary>
+          <div class="curl-content">
+            <p class="field-help">Tokens are stored unencrypted in auth-keys.json in the application's working directory. Save replaces an existing token with the same name.</p>
+            <div class="auth-fields">
+              <div><label for="auth-saved">Saved token</label><select id="auth-saved"><option value="">Select a token</option></select></div>
+              <div><label for="auth-name">Token name</label><input id="auth-name" type="text" autocomplete="off" placeholder="e.g. development"></div>
+              <div><label for="auth-token">API token</label><input id="auth-token" type="password" autocomplete="off" spellcheck="false"></div>
+            </div>
+            <div class="curl-actions">
+              <p class="field-help">Load a token to view or edit it; use it to set the Authorization: Bearer header.</p>
+              <div class="curl-buttons">
+                <button id="auth-refresh" type="button">Refresh list</button>
+                <button id="auth-load" type="button">Load token</button>
+                <button id="auth-save" type="button">Save token</button>
+                <button id="auth-use" type="button">Use as Bearer</button>
+              </div>
+            </div>
+            <div id="auth-message" class="curl-message" role="status" aria-live="polite" hidden></div>
           </div>
         </details>
         <label class="section-label" for="url">REQUEST URL <span>01</span></label>
@@ -108,6 +137,7 @@
     <footer><span><span class="footer-dot"></span> READY TO GO</span><span>MADE FOR BUILDERS <b>✳</b></span></footer>
   </div>
   <script src="curl.js"></script>
+  <script src="theme.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

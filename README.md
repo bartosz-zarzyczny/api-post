@@ -20,9 +20,31 @@ Run `tinyjs build` on a Mac to create a macOS `.app` for that Mac's architecture
 
 ## Usage
 
+Use the **Theme** selector in the top bar to switch between the original Classic theme and the Orange light theme. The selection is saved between launches using tinyjs settings; the app displays a warning if it cannot save the preference.
+
 Select a method, enter the full URL, and optionally add headers (one per line, in the format `Name: value`). You can provide a request body for methods other than GET and HEAD. Set the `Content-Type` header yourself if the API requires it. Responses with HTTP error codes are displayed like other responses; network errors are shown separately.
 
-Requests are made by the tinyjs backend, without browser CORS restrictions. The application does not save request data. The response size is the number of bytes in its UTF-8-encoded text, and the duration includes reading the response body.
+Requests are made by the tinyjs backend, without browser CORS restrictions. The application does not save request data except API tokens explicitly saved as described below. The response size is the number of bytes in its UTF-8-encoded text, and the duration includes reading the response body.
+
+### API tokens
+
+To save a token, open **API tokens**, enter a name in **Token name** and a value in **API token**, then click **Save token**. A confirmation or an error appears below the buttons. Saving under an existing name replaces its value. To retrieve it later, select its name under **Saved token** and click **Load token**. After editing the file externally, click **Refresh list**.
+
+If saving fails, check the displayed error, the file's contents and permissions, and the application's working directory.
+
+The app stores tokens in `auth-keys.json` in its **working directory** (the project directory when running `tinyjs dev` from there). If the file is missing or empty, it is initialized when the first token is saved. Alternatively, copy `auth-keys-example.json` to `auth-keys.json` and edit it yourself. A non-empty file must contain a JSON object mapping names to token strings, for example:
+
+```json
+{
+  "development": "replace-with-your-token"
+}
+```
+
+In **API tokens**, enter a name and token and choose **Save token**, or select a saved name and choose **Load token**. Saving an existing name replaces its value. **Use as Bearer** puts the entered or loaded token in the `Authorization: Bearer ...` request header, replacing any existing Authorization header; it does not send the request. Refresh the list after editing the file externally.
+
+`auth-keys.json` is ignored by Git; commit only `auth-keys-example.json` without real tokens. **Tokens are stored as plaintext, not encrypted.** Protect the file with appropriate filesystem permissions and do not share or commit it. The token can also appear in request headers, exported cURL commands and the clipboard. The example contains an empty object, not credentials.
+
+For a built application, the location of `auth-keys.json` depends on the working directory from which the app is launched, not on the executable's location. Invalid non-empty files are never overwritten and must be corrected before saving. Save operations replace the file atomically, but concurrent edits by other application instances or external programs are not coordinated.
 
 ### Importing cURL
 
