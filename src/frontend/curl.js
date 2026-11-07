@@ -148,7 +148,9 @@ function parseCurl(command) {
   return { url, method, headers: headers.map(([name, value]) => `${name}: ${value}`).join('\n'), body: data.join('&') };
 }
 
-function exportCurl({ url, method, headers, body }) {
+const HEADER_NAME = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
+
+function prepareExport({ url, method, headers, body }) {
   let parsedUrl;
   try {
     parsedUrl = new URL(url);
@@ -159,27 +161,85 @@ function exportCurl({ url, method, headers, body }) {
   if (parsedUrl.username || parsedUrl.password) throw new Error('URLs containing credentials cannot be exported.');
   if (!['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'].includes(method)) throw new Error(`Unsupported request method: ${method}`);
 
+  const entries = Object.entries(headers);
+  for (const [name, value] of entries) {
+    if (!HEADER_NAME.test(name) || /[\r\n\0]/.test(value)) throw new Error(`Invalid header: ${name}`);
+  }
+  const hasBody = method !== 'GET' && method !== 'HEAD' && body !== '';
+  if (hasBody && !entries.some(([name]) => name.toLowerCase() === 'content-type')) {
+    entries.push(['Content-Type', 'text/plain;charset=UTF-8']);
+  }
+  return { url, method, headers: entries, body: hasBody ? body : null };
+}
+
+function shellQuote(value) {
+  if (value.includes('\0')) throw new Error('NUL characters cannot be represented in a shell command.');
+  return `'${value.replace(/'/g, "'\\''")}'`;
+}
+
+function curlArguments(request) {
+  const args = ['--globoff', '--location', `--url=${shellQuote(request.url)}`];
+  args.push(request.method === 'HEAD' ? '--head' : `--request=${shellQuote(request.method)}`);
+  for (const [name, value] of request.headers) {
+    args.push(`--header=${shellQuote(value ? `${name}: ${value}` : `${name};`)}`);
+  }
+  if (request.body !== null) args.push(`--data-raw=${shellQuote(request.body)}`);
+  return args;
+}
+
+function exportCurl(request) {
+  return ['curl', ...curlArguments(prepareExport(request))].join(' ');
+}
+
+function exportBash(request) {
+  const lines = ['curl', ...curlArguments(prepareExport(request))];
+  return `#!/usr/bin/env bash\nset -euo pipefail\n\n${lines.join(' \\\n  ')}\n`;
+}
+
+function exportPowerShell(request) {
+  // PowerShell treats typographic single quotes as quote characters too.
   const quote = (value) => {
-    if (value.includes('\0')) throw new Error('NUL characters cannot be represented in a shell command.');
-    return `'${value.replace(/'/g, "'\\''")}'`;
+    if (value.includes('\0')) throw new Error('NUL characters cannot be represented in a PowerShell script.');
+    return `'${value.replace(/['\u2018\u2019\u201A\u201B]/g, (char) => char + char)}'`;
   };
-  const command = ['curl', '--globoff', '--location', `--url=${quote(url)}`];
-  if (method === 'HEAD') command.push('--head');
-  else command.push(`--request=${quote(method)}`);
-  for (const [name, value] of Object.entries(headers)) {
-    if (!/^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/.test(name) || /[\r\n\0]/.test(value)) {
-      throw new Error(`Invalid header: ${name}`);
-    }
-    command.push(`--header=${quote(value ? `${name}: ${value}` : `${name};`)}`);
+  const prepared = prepareExport(request);
+  let headers = prepared.headers;
+  let contentType = null;
+  if (prepared.body !== null) {
+    contentType = headers.find(([name]) => name.toLowerCase() === 'content-type')[1];
+    headers = headers.filter(([name]) => name.toLowerCase() !== 'content-type');
   }
-  if (method !== 'GET' && method !== 'HEAD' && body !== '') {
-    if (!Object.keys(headers).some((name) => name.toLowerCase() === 'content-type')) {
-      command.push(`--header=${quote('Content-Type: text/plain;charset=UTF-8')}`);
-    }
-    command.push(`--data-raw=${quote(body)}`);
+  const lines = ['$params = @{', `    Uri = ${quote(prepared.url)}`, `    Method = ${quote(prepared.method)}`];
+  if (headers.length) {
+    lines.push('    Headers = @{', ...headers.map(([name, value]) => `        ${quote(name)} = ${quote(value)}`), '    }');
   }
-  return command.join(' ');
+  if (contentType !== null) lines.push(`    ContentType = ${quote(contentType)}`);
+  if (prepared.body !== null) lines.push(`    Body = ${quote(prepared.body)}`);
+  lines.push('    UseBasicParsing = $true', '}', '', '$response = Invoke-WebRequest @params', '$response.StatusCode', '$response.Content');
+  return `${lines.join('\n')}\n`;
+}
+
+function exportPython(request) {
+  // A JSON string literal is also a valid Python string literal.
+  const quote = (value) => JSON.stringify(value);
+  const prepared = prepareExport(request);
+  const lines = ['import requests', '', 'response = requests.request(', `    ${quote(prepared.method)},`, `    ${quote(prepared.url)},`];
+  if (prepared.headers.length) {
+    lines.push('    headers={', ...prepared.headers.map(([name, value]) => `        ${quote(name)}: ${quote(value)},`), '    },');
+  }
+  if (prepared.body !== null) lines.push(`    data=${quote(prepared.body)}.encode("utf-8"),`);
+  lines.push(')', '', 'print(response.status_code)', 'print(response.text)');
+  return `${lines.join('\n')}\n`;
+}
+
+const EXPORTERS = { curl: exportCurl, bash: exportBash, powershell: exportPowerShell, python: exportPython };
+
+function exportRequest(format, request) {
+  const exporter = Object.hasOwn(EXPORTERS, format) ? EXPORTERS[format] : undefined;
+  if (!exporter) throw new Error(`Unsupported export format: ${format}`);
+  return exporter(request);
 }
 
 globalThis.parseCurl = parseCurl;
 globalThis.exportCurl = exportCurl;
+globalThis.exportRequest = exportRequest;

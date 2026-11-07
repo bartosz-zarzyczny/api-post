@@ -60,15 +60,22 @@
           </div>
         </details>
         <details class="curl-import">
-          <summary>Export as cURL</summary>
+          <summary>Export request</summary>
           <div class="curl-content">
-            <label for="curl-export-output">Generated cURL command</label>
-            <textarea id="curl-export-output" readonly spellcheck="false" placeholder="Generate a command from the current request."></textarea>
+            <fieldset class="export-formats">
+              <legend>Format</legend>
+              <label><input type="radio" name="export-format" value="curl" checked> cURL</label>
+              <label><input type="radio" name="export-format" value="bash"> Bash</label>
+              <label><input type="radio" name="export-format" value="powershell"> PowerShell</label>
+              <label><input type="radio" name="export-format" value="python"> Python</label>
+            </fieldset>
+            <label for="curl-export-output">Exported code</label>
+            <textarea id="curl-export-output" readonly spellcheck="false" placeholder="Select a format and click Export to generate code from the current request."></textarea>
             <div class="curl-actions">
-              <p class="field-help">Uses POSIX shell syntax. The command may contain credentials.</p>
+              <p id="export-help" class="field-help"></p>
               <div class="curl-buttons">
-                <button id="curl-export" type="button">Generate command</button>
-                <button id="curl-copy" type="button" disabled>Copy command</button>
+                <button id="curl-export" type="button">Export</button>
+                <button id="curl-copy" type="button" disabled>Copy</button>
               </div>
             </div>
             <div id="curl-export-message" class="curl-message" role="status" aria-live="polite" hidden></div>

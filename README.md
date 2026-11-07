@@ -48,7 +48,7 @@ The app stores tokens in `auth-keys.json` in its **working directory** (the proj
 
 In **API tokens**, enter a name and token and choose **Save token**, or select a saved name and choose **Load token**. Saving an existing name replaces its value. **Use as Bearer** puts the entered or loaded token in the `Authorization: Bearer ...` request header, replacing any existing Authorization header; it does not send the request. Refresh the list after editing the file externally.
 
-`auth-keys.json` is ignored by Git; commit only `auth-keys-example.json` without real tokens. **Tokens are stored as plaintext, not encrypted.** Protect the file with appropriate filesystem permissions and do not share or commit it. The token can also appear in request headers, exported cURL commands and the clipboard. The example contains an empty object, not credentials.
+`auth-keys.json` is ignored by Git; commit only `auth-keys-example.json` without real tokens. **Tokens are stored as plaintext, not encrypted.** Protect the file with appropriate filesystem permissions and do not share or commit it. The token can also appear in request headers, in code produced by **Export request** (cURL, Bash, PowerShell, and Python), and in the clipboard. The example contains an empty object, not credentials.
 
 For a built application, the location of `auth-keys.json` depends on the working directory from which the app is launched, not on the executable's location. Invalid non-empty files are never overwritten and must be corrected before saving. Save operations replace the file atomically, but concurrent edits by other application instances or external programs are not coordinated.
 
@@ -60,8 +60,17 @@ The importer accepts a single `curl` command using POSIX shell quoting and backs
 
 Unsupported options, file inputs, shell expansion, multiple URLs, duplicate headers, and request bodies with GET or HEAD are rejected. Empty headers use cURL's `Name;` syntax. This is not a shell: use literal values instead of environment variables or command substitution. Imported requests use the app's normal HTTP behavior, including automatic redirects; they do not reproduce all cURL transport behavior.
 
-### Exporting cURL
+### Exporting a request
 
-Open **Export as cURL** and select **Generate command**, then copy the command or use **Copy command**. Regenerate it after changing the request. The command uses POSIX shell quoting (for example, in macOS or Linux terminals), not Windows Command Prompt or PowerShell syntax. It includes the request's headers and body, which may contain credentials or other sensitive data; review it before sharing.
+Open **Export request** (the panel is collapsed by default), choose a format with the radio buttons, and click **Export**. The generated code appears in the read-only **Exported code** field; use **Copy** to copy it to the clipboard. The output is cleared when you change the request fields or switch the format, so regenerate it before copying. The code includes the request's headers and body, which may contain credentials or other sensitive data; review it before sharing.
 
-The export follows redirects and disables cURL URL globbing. For a non-empty body without a `Content-Type` header, it explicitly uses the application's default `text/plain;charset=UTF-8`. The command represents the request fields, not every detail of tinyjs networking; cURL configuration and transport behavior may differ. In particular, redirect handling with an explicit request method may differ from the app.
+Formats:
+
+- **cURL** (default): a single-line command using POSIX shell quoting (macOS or Linux terminals), not Windows Command Prompt or PowerShell syntax.
+- **Bash**: a script with a `#!/usr/bin/env bash` header and `set -euo pipefail`, containing the same cURL command with one argument per line; requires `curl`.
+- **PowerShell**: a script that builds a parameter table and calls `Invoke-WebRequest` with `UseBasicParsing`, then prints the status code and content. Single quotes are doubled, including typographic quotes, which PowerShell also treats as quote characters.
+- **Python**: a script that calls `requests.request` and prints the status code and text; requires the third-party `requests` package (`pip install requests`). The body is sent as UTF-8 bytes.
+
+All formats follow redirects and disable cURL URL globbing. For a non-empty body without a `Content-Type` header, the export explicitly uses the application's default `text/plain;charset=UTF-8`; in PowerShell it is passed as `ContentType` instead of a header entry. GET and HEAD requests never include a body. Export rejects URLs that are not HTTP or HTTPS, URLs containing credentials, unsupported methods, invalid header names or values, and values containing NUL characters.
+
+The code represents the request fields, not every detail of tinyjs networking; client configuration and transport behavior may differ. In particular, redirect handling with an explicit request method may differ from the app.

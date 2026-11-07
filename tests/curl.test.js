@@ -4,6 +4,7 @@ import '../src/frontend/curl.js';
 
 const parseCurl = globalThis.parseCurl;
 const exportCurl = globalThis.exportCurl;
+const exportRequest = globalThis.exportRequest;
 
 test('imports a quoted multiline POST with headers and JSON', () => {
   const command = `curl 'https://example.com/api?x=1&y=2' \\
@@ -95,3 +96,66 @@ test('rejects request values that cannot be exported faithfully', () => {
   assert.throws(() => exportCurl({ ...request, headers: { 'bad name': 'x' } }), /Invalid header/);
   assert.throws(() => exportCurl({ ...request, body: 'x\0y' }), /NUL/);
 });
+
+const sample = {
+  url: 'https://example.com/a?x=1&y=2',
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'X-Note': "it's \u2018quoted\u2019" },
+  body: '{"text":"it\'s $HOME","line":"a\\nb"}\nsecond',
+};
+
+test('exportRequest curl matches exportCurl and rejects unknown formats', () => {
+  assert.equal(exportRequest('curl', sample), exportCurl(sample));
+  assert.throws(() => exportRequest('ruby', sample), /Unsupported export format/);
+  assert.throws(() => exportRequest('toString', sample), /Unsupported export format/);
+});
+
+test('exports a Bash script that wraps the same cURL arguments', () => {
+  const script = exportRequest('bash', sample);
+  assert.match(script, /^#!\/usr\/bin\/env bash\nset -euo pipefail\n\ncurl \\\n  --globoff \\\n  --location \\\n  --url=/);
+  const command = script.split('\n\n')[1].replace(/ \\\n {2}/g, ' ').trim();
+  assert.deepEqual(parseCurl(command), parseCurl(exportCurl(sample)));
+});
+
+test('exports PowerShell with escaped quotes and a ContentType parameter', () => {
+  const script = exportRequest('powershell', sample);
+  assert.match(script, /Uri = 'https:\/\/example\.com\/a\?x=1&y=2'/);
+  assert.match(script, /Method = 'POST'/);
+  assert.match(script, /ContentType = 'application\/json'/);
+  assert.doesNotMatch(script, /'Content-Type'/);
+  assert.match(script, /'X-Note' = 'it''s \u2018\u2018quoted\u2019\u2019'/);
+  assert.match(script, /Body = '\{"text":"it''s \$HOME","line":"a\\nb"\}\nsecond'/);
+  assert.match(script, /Invoke-WebRequest @params/);
+  assert.match(exportRequest('powershell', { ...sample, method: 'GET', headers: { 'Content-Type': 'text/plain' } }), /Headers = @\{\n {8}'Content-Type' = 'text\/plain'/);
+  assert.throws(() => exportRequest('powershell', { ...sample, body: 'x\0y' }), /NUL/);
+});
+
+test('exports Python with valid string literals and a default Content-Type', () => {
+  const script = exportRequest('python', { url: 'https://example.com', method: 'PUT', headers: { 'X-A': 'q"\\' }, body: 'é\0"' });
+  assert.equal(script, [
+    'import requests',
+    '',
+    'response = requests.request(',
+    '    "PUT",',
+    '    "https://example.com",',
+    '    headers={',
+    '        "X-A": "q\\"\\\\",',
+    '        "Content-Type": "text/plain;charset=UTF-8",',
+    '    },',
+    '    data="é\\u0000\\"".encode("utf-8"),',
+    ')',
+    '',
+    'print(response.status_code)',
+    'print(response.text)',
+    '',
+  ].join('\n'));
+  assert.doesNotMatch(exportRequest('python', { ...sample, method: 'GET' }), /data=/);
+});
+
+test('all export formats validate the request', () => {
+  for (const format of ['curl', 'bash', 'powershell', 'python']) {
+    assert.throws(() => exportRequest(format, { ...sample, url: 'file:///x' }), /HTTP and HTTPS/);
+    assert.throws(() => exportRequest(format, { ...sample, headers: { 'bad name': 'x' } }), /Invalid header/);
+  }
+});
+

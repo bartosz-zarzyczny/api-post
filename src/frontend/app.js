@@ -247,16 +247,37 @@ $('tab-open').addEventListener('click', () => withTabFiles(async () => {
 }));
 withTabFiles(refreshSavedTabs);
 
+const exportHelp = {
+  curl: 'Single-line cURL command using POSIX shell syntax. It may contain credentials.',
+  bash: 'Bash script using cURL (requires curl). It may contain credentials.',
+  powershell: 'PowerShell script using Invoke-WebRequest. It may contain credentials.',
+  python: 'Python script using the requests library. It may contain credentials.',
+};
+const exportFormatInputs = document.querySelectorAll('input[name="export-format"]');
+const exportFormat = () => document.querySelector('input[name="export-format"]:checked').value;
+const exportLabel = () => document.querySelector('input[name="export-format"]:checked').parentElement.textContent.trim();
+
 function clearCurlExport() {
   $('curl-export-output').value = '';
   $('curl-copy').disabled = true;
   $('curl-export-message').hidden = true;
 }
 
+function updateExportHelp() {
+  $('export-help').textContent = exportHelp[exportFormat()];
+}
+
 for (const id of ['url', 'method', 'headers', 'body']) {
   $(id).addEventListener('input', clearCurlExport);
   $(id).addEventListener('change', clearCurlExport);
 }
+for (const input of exportFormatInputs) {
+  input.addEventListener('change', () => {
+    clearCurlExport();
+    updateExportHelp();
+  });
+}
+updateExportHelp();
 
 method.addEventListener('change', updateBodyState);
 updateBodyState();
@@ -362,17 +383,17 @@ $('curl-export').addEventListener('click', () => {
   const message = $('curl-export-message');
   clearCurlExport();
   try {
-    $('curl-export-output').value = exportCurl({
+    $('curl-export-output').value = exportRequest(exportFormat(), {
       url: $('url').value.trim(),
       method: method.value,
       headers: parseHeaders($('headers').value),
       body: body.value,
     });
     $('curl-copy').disabled = false;
-    message.textContent = 'Command generated. Review it before sharing or running it.';
+    message.textContent = `${exportLabel()} code generated. Review it before sharing or running it.`;
     message.className = 'curl-message success';
   } catch (error) {
-    message.textContent = `Could not export cURL: ${error instanceof Error ? error.message : String(error)}`;
+    message.textContent = `Could not export ${exportLabel()}: ${error instanceof Error ? error.message : String(error)}`;
     message.className = 'curl-message import-error';
   }
   message.hidden = false;
@@ -382,10 +403,10 @@ $('curl-copy').addEventListener('click', async () => {
   const message = $('curl-export-message');
   try {
     await tiny.clipboard.write({ text: $('curl-export-output').value });
-    message.textContent = 'Command copied to the clipboard.';
+    message.textContent = 'Code copied to the clipboard.';
     message.className = 'curl-message success';
   } catch (error) {
-    message.textContent = `Could not copy command: ${error instanceof Error ? error.message : String(error)}`;
+    message.textContent = `Could not copy code: ${error instanceof Error ? error.message : String(error)}`;
     message.className = 'curl-message import-error';
   }
   message.hidden = false;

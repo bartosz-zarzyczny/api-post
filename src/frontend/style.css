@@ -48,6 +48,10 @@ h1 span { color: #c6f46b; }
 .curl-actions .field-help { margin: 0; }
 .curl-actions button { min-height: 40px; }
 .curl-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.export-formats { border: 0; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.export-formats legend { font-size: 12px; font-weight: 700; padding: 0; margin-bottom: 10px; }
+.curl-content .export-formats label { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 400; cursor: pointer; }
+.export-formats input { flex: none; padding: 0; margin: 0; accent-color: #a2cc69; }
 .auth-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
 .auth-fields input, .auth-fields select { width: 100%; min-height: 42px; border: 1px solid #2a3229; border-radius: 5px; background: #0d110e; padding: 0 12px; }
 .auth-fields select { color: #edf2e8; }
