@@ -1,165 +1,331 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>API Post</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand"><span class="brand-mark">↗</span><span>api<span class="brand-accent">post</span></span></div>
-      <span class="topbar-label">YOUR HTTP CLIENT</span>
-      <div class="theme-control">
-        <label for="theme-select">Theme</label>
-        <select id="theme-select" disabled>
-          <option value="classic">Classic</option>
-          <option value="orange">Orange</option>
-        </select>
-      </div>
-      <span class="topbar-badge"><span></span> tinyjs desktop</span>
-    </header>
-    <div id="theme-message" class="theme-message" role="status" aria-live="polite" hidden></div>
-
-    <main>
-      <div class="heading">
-        <div>
-          <div class="eyebrow"><span></span> REQUEST WORKSPACE</div>
-          <h1>Send. Explore. <span>Build.</span></h1>
-          <p>Everything you need to interact with APIs, in one place.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Post</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">↗</span
+          ><span>api<span class="brand-accent">post</span></span>
         </div>
-        <div class="heading-decoration" aria-hidden="true">{ <span> }</span></div>
-      </div>
-
-      <div class="tabs-bar">
-        <nav id="request-tabs" class="request-tabs" aria-label="Request tabs"></nav>
-        <button id="add-request-tab" type="button" class="add-tab">+ New request</button>
-      </div>
-      <div class="tabs-files">
-        <button id="tab-save" type="button">Save</button>
-        <button id="tab-save-as" type="button">Save As</button>
-        <label for="saved-tabs">Saved requests</label>
-        <select id="saved-tabs"><option value="">Select a saved request</option></select>
-        <button id="tab-open" type="button">Open</button>
-        <button id="tab-refresh" type="button">Refresh</button>
-      </div>
-      <div id="tabs-message" class="tabs-message" role="alert" hidden></div>
-      <div id="tabs-status" class="tabs-status" role="status" aria-live="polite" hidden></div>
-      <form id="request-form">
-        <details class="curl-import">
-          <summary>Import cURL command</summary>
-          <div class="curl-content">
-            <label for="curl-command">Paste a cURL command</label>
-            <textarea id="curl-command" spellcheck="false" placeholder="curl 'https://api.example.com/v1/resource' -H 'Accept: application/json'"></textarea>
-            <div class="curl-actions">
-              <p class="field-help">Import fills the request fields without running the command or sending a request.</p>
-              <button id="curl-import" type="button">Import request</button>
-            </div>
-            <div id="curl-message" class="curl-message" role="status" aria-live="polite" hidden></div>
-          </div>
-        </details>
-        <details class="curl-import">
-          <summary>Export request</summary>
-          <div class="curl-content">
-            <fieldset class="export-formats">
-              <legend>Format</legend>
-              <label><input type="radio" name="export-format" value="curl" checked> cURL</label>
-              <label><input type="radio" name="export-format" value="bash"> Bash</label>
-              <label><input type="radio" name="export-format" value="powershell"> PowerShell</label>
-              <label><input type="radio" name="export-format" value="python"> Python</label>
-            </fieldset>
-            <label for="curl-export-output">Exported code</label>
-            <textarea id="curl-export-output" readonly spellcheck="false" placeholder="Select a format and click Export to generate code from the current request."></textarea>
-            <div class="curl-actions">
-              <p id="export-help" class="field-help"></p>
-              <div class="curl-buttons">
-                <button id="curl-export" type="button">Export</button>
-                <button id="curl-copy" type="button" disabled>Copy</button>
-              </div>
-            </div>
-            <div id="curl-export-message" class="curl-message" role="status" aria-live="polite" hidden></div>
-          </div>
-        </details>
-        <details class="curl-import" id="auth-panel">
-          <summary>API tokens</summary>
-          <div class="curl-content">
-            <p class="field-help">Tokens are stored unencrypted in auth-keys.json in the application's working directory. Save replaces an existing token with the same name.</p>
-            <div class="auth-fields">
-              <div><label for="auth-saved">Saved token</label><select id="auth-saved"><option value="">Select a token</option></select></div>
-              <div><label for="auth-name">Token name</label><input id="auth-name" type="text" autocomplete="off" placeholder="e.g. development"></div>
-              <div><label for="auth-token">API token</label><input id="auth-token" type="password" autocomplete="off" spellcheck="false"></div>
-            </div>
-            <div class="curl-actions">
-              <p class="field-help">Load a token to view or edit it; use it to set the Authorization: Bearer header.</p>
-              <div class="curl-buttons">
-                <button id="auth-refresh" type="button">Refresh list</button>
-                <button id="auth-load" type="button">Load token</button>
-                <button id="auth-save" type="button">Save token</button>
-                <button id="auth-use" type="button">Use as Bearer</button>
-              </div>
-            </div>
-            <div id="auth-message" class="curl-message" role="status" aria-live="polite" hidden></div>
-          </div>
-        </details>
-        <label class="section-label" for="url">REQUEST URL <span>01</span></label>
-        <div class="request-bar">
-          <select id="method" aria-label="HTTP method">
-            <option>GET</option><option>POST</option><option>PUT</option>
-            <option>PATCH</option><option>DELETE</option><option>HEAD</option>
+        <span class="topbar-label">YOUR HTTP CLIENT</span>
+        <div class="theme-control">
+          <label for="theme-select">Theme</label>
+          <select id="theme-select" disabled>
+            <option value="classic">Classic</option>
+            <option value="orange">Orange</option>
           </select>
-          <input id="url" type="url" placeholder="https://api.example.com/v1/resource" required spellcheck="false" autocomplete="off">
-          <button id="send" type="submit">Send request <span>↗</span></button>
         </div>
-        <div class="request-hint"><span class="hint-icon">i</span> Enter the full URL and select a request method.</div>
+        <span class="topbar-badge"><span></span> tinyjs desktop</span>
+      </header>
+      <div
+        id="theme-message"
+        class="theme-message"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
 
-        <div class="workspace">
-          <section class="panel request-panel">
-            <div class="panel-heading">
-              <div><span class="panel-icon">⌘</span><h2>Request</h2></div>
-              <span class="panel-caption">CONFIGURATION</span>
-            </div>
-            <div class="editor-section">
-              <div class="editor-heading"><label for="headers">Headers</label><span>ONE PER LINE</span></div>
-              <textarea id="headers" spellcheck="false" placeholder="Content-Type: application/json&#10;Authorization: Bearer token"></textarea>
-              <p class="field-help">Format: <code>Name: value</code></p>
-            </div>
-            <div class="editor-section body-section">
-              <div class="editor-heading"><label for="body">Request body</label><span>RAW</span></div>
-              <textarea id="body" spellcheck="false" placeholder="{&#10;  &quot;message&quot;: &quot;Hello, API!&quot;&#10;}"></textarea>
-              <p class="field-help" id="body-help">The body is sent for methods other than GET and HEAD.</p>
-            </div>
-          </section>
-
-          <section class="panel response-panel">
-            <div class="panel-heading">
-              <div><span class="panel-icon response-icon">⌁</span><h2>Response</h2></div>
-              <span id="response-label" class="panel-caption">WAITING</span>
-            </div>
-            <div id="response-meta" class="response-meta" hidden>
-              <span id="status" class="status"></span>
-              <span id="duration"></span><span id="size"></span>
-            </div>
-            <div id="empty-state" class="empty-state">
-              <div class="empty-icon"><span>{ }</span></div>
-              <h3>Your response will appear here</h3>
-              <p>Configure your request and click “Send request” to see the result.</p>
-            </div>
-            <div id="result" class="result" hidden>
-              <div class="result-heading"><span>RESPONSE BODY</span><span id="format"></span></div>
-              <pre id="response-body"></pre>
-              <details id="response-headers"><summary>Response headers</summary><pre id="response-headers-content"></pre></details>
-            </div>
-            <div id="error" class="error" role="alert" hidden></div>
-          </section>
+      <main>
+        <div class="heading">
+          <div>
+            <div class="eyebrow"><span></span> REQUEST WORKSPACE</div>
+            <h1>Send. Explore. <span>Build.</span></h1>
+            <p>Everything you need to interact with APIs, in one place.</p>
+          </div>
+          <div class="heading-decoration" aria-hidden="true">
+            { <span> }</span>
+          </div>
         </div>
-      </form>
-    </main>
-    <footer><span><span class="footer-dot"></span> READY TO GO</span><span>MADE FOR BUILDERS <b>✳</b></span></footer>
-  </div>
-  <script src="curl.js"></script>
-  <script src="theme.js"></script>
-  <script src="tabs.js"></script>
-  <script src="app.js"></script>
-</body>
+
+        <div class="tabs-bar">
+          <nav
+            id="request-tabs"
+            class="request-tabs"
+            aria-label="Request tabs"
+          ></nav>
+          <button id="add-request-tab" type="button" class="add-tab">
+            + New request
+          </button>
+        </div>
+        <div class="tabs-files">
+          <button id="tab-save" type="button">Save</button>
+          <button id="tab-save-as" type="button">Save As</button>
+          <label for="saved-tabs">Saved requests</label>
+          <select id="saved-tabs">
+            <option value="">Select a saved request</option>
+          </select>
+          <button id="tab-open" type="button">Open</button>
+          <button id="tab-refresh" type="button">Refresh</button>
+        </div>
+        <div id="tabs-message" class="tabs-message" role="alert" hidden></div>
+        <div
+          id="tabs-status"
+          class="tabs-status"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <form id="request-form">
+          <details class="curl-import">
+            <summary>Import cURL command</summary>
+            <div class="curl-content">
+              <label for="curl-command">Paste a cURL command</label>
+              <textarea
+                id="curl-command"
+                spellcheck="false"
+                placeholder="curl 'https://api.example.com/v1/resource' -H 'Accept: application/json'"
+              ></textarea>
+              <div class="curl-actions">
+                <p class="field-help">
+                  Import fills the request fields without running the command or
+                  sending a request.
+                </p>
+                <button id="curl-import" type="button">Import request</button>
+              </div>
+              <div
+                id="curl-message"
+                class="curl-message"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+            </div>
+          </details>
+          <details class="curl-import">
+            <summary>Export request</summary>
+            <div class="curl-content">
+              <fieldset class="export-formats">
+                <legend>Format</legend>
+                <label
+                  ><input
+                    type="radio"
+                    name="export-format"
+                    value="curl"
+                    checked
+                  />
+                  cURL</label
+                >
+                <label
+                  ><input type="radio" name="export-format" value="bash" />
+                  Bash</label
+                >
+                <label
+                  ><input
+                    type="radio"
+                    name="export-format"
+                    value="powershell"
+                  />
+                  PowerShell</label
+                >
+                <label
+                  ><input type="radio" name="export-format" value="python" />
+                  Python</label
+                >
+              </fieldset>
+              <label for="curl-export-output">Exported code</label>
+              <textarea
+                id="curl-export-output"
+                readonly
+                spellcheck="false"
+                placeholder="Select a format and click Export to generate code from the current request."
+              ></textarea>
+              <div class="curl-actions">
+                <p id="export-help" class="field-help"></p>
+                <div class="curl-buttons">
+                  <button id="curl-export" type="button">Export</button>
+                  <button id="curl-copy" type="button" disabled>Copy</button>
+                </div>
+              </div>
+              <div
+                id="curl-export-message"
+                class="curl-message"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+            </div>
+          </details>
+          <details class="curl-import" id="auth-panel">
+            <summary>API tokens</summary>
+            <div class="curl-content">
+              <p class="field-help">
+                Tokens are stored unencrypted in auth-keys.json in the
+                application's working directory. Save replaces an existing token
+                with the same name.
+              </p>
+              <div class="auth-fields">
+                <div>
+                  <label for="auth-saved">Saved token</label
+                  ><select id="auth-saved">
+                    <option value="">Select a token</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="auth-name">Token name</label
+                  ><input
+                    id="auth-name"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="e.g. development"
+                  />
+                </div>
+                <div>
+                  <label for="auth-token">API token</label
+                  ><input
+                    id="auth-token"
+                    type="password"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </div>
+              </div>
+              <div class="curl-actions">
+                <p class="field-help">
+                  Load a token to view or edit it; use it to set the
+                  Authorization: Bearer header.
+                </p>
+                <div class="curl-buttons">
+                  <button id="auth-refresh" type="button">Refresh list</button>
+                  <button id="auth-load" type="button">Load token</button>
+                  <button id="auth-save" type="button">Save token</button>
+                  <button id="auth-use" type="button">Use as Bearer</button>
+                </div>
+              </div>
+              <div
+                id="auth-message"
+                class="curl-message"
+                role="status"
+                aria-live="polite"
+                hidden
+              ></div>
+            </div>
+          </details>
+          <label class="section-label" for="url"
+            >REQUEST URL <span>01</span></label
+          >
+          <div class="request-bar">
+            <select id="method" aria-label="HTTP method">
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>PATCH</option>
+              <option>DELETE</option>
+              <option>HEAD</option>
+            </select>
+            <input
+              id="url"
+              type="url"
+              placeholder="https://api.example.com/v1/resource"
+              required
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <button id="send" type="submit">Send request <span>↗</span></button>
+          </div>
+          <div class="request-hint">
+            <span class="hint-icon">i</span> Enter the full URL and select a
+            request method.
+          </div>
+
+          <div class="workspace">
+            <section class="panel request-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="panel-icon">⌘</span>
+                  <h2>Request</h2>
+                </div>
+                <span class="panel-caption">CONFIGURATION</span>
+              </div>
+              <div class="editor-section">
+                <div class="editor-heading">
+                  <label for="headers">Headers</label><span>ONE PER LINE</span>
+                </div>
+                <textarea
+                  id="headers"
+                  spellcheck="false"
+                  placeholder="Content-Type: application/json&#10;Authorization: Bearer token"
+                ></textarea>
+                <p class="field-help">Format: <code>Name: value</code></p>
+              </div>
+              <div class="editor-section body-section">
+                <div class="editor-heading">
+                  <label for="body">Request body</label><span>RAW</span>
+                </div>
+                <textarea
+                  id="body"
+                  spellcheck="false"
+                  placeholder='{&#10;  "message": "Hello, API!"&#10;}'
+                ></textarea>
+                <p class="field-help" id="body-help">
+                  The body is sent for methods other than GET and HEAD.
+                </p>
+              </div>
+            </section>
+
+            <section class="panel response-panel">
+              <div class="panel-heading">
+                <div>
+                  <span class="panel-icon response-icon">⌁</span>
+                  <h2>Response</h2>
+                </div>
+                <span id="response-label" class="panel-caption">WAITING</span>
+              </div>
+              <div id="response-meta" class="response-meta" hidden>
+                <span id="status" class="status"></span>
+                <span id="duration"></span><span id="size"></span>
+              </div>
+              <div id="empty-state" class="empty-state">
+                <div class="empty-icon"><span>{ }</span></div>
+                <h3>Your response will appear here</h3>
+                <p>
+                  Configure your request and click “Send request” to see the
+                  result.
+                </p>
+              </div>
+              <div id="result" class="result" hidden>
+                <div class="result-heading">
+                  <span>RESPONSE BODY</span><span id="format"></span>
+                </div>
+                <pre id="response-body"></pre>
+                <details id="response-headers">
+                  <summary>Response headers</summary>
+                  <pre id="response-headers-content"></pre>
+                </details>
+              </div>
+              <div id="error" class="error" role="alert" hidden></div>
+            </section>
+          </div>
+        </form>
+      </main>
+      <footer>
+        <span><span class="footer-dot"></span> READY TO GO</span>
+        <nav class="social-links" aria-label="Social media">
+          <a
+            href="https://github.com/bartosz-zarzyczny"
+            aria-label="GitHub"
+            title="GitHub"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.3-5.467-1.333-5.467-5.931 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.5 11.5 0 0 1 6.004 0c2.29-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.628-5.48 5.922.43.372.814 1.102.814 2.222 0 1.605-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.597 24 12.297c0-6.627-5.373-12-12-12"
+              />
+            </svg>
+          </a>
+        </nav>
+        <span>MADE FOR BUILDERS <b>✳</b></span>
+      </footer>
+    </div>
+    <script src="curl.js"></script>
+    <script src="theme.js"></script>
+    <script src="tabs.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

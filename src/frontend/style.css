@@ -106,6 +106,10 @@ summary { cursor: pointer; }
 .error { margin: 22px; padding: 14px; color: #ffb1aa; background: #35221f; border: 1px solid #693a35; border-radius: 5px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 footer { border-top: 1px solid #252a26; padding: 20px 6%; display: flex; justify-content: space-between; color: #73806e; font-size: 9px; }
 footer b { color: #c6f46b; }
+.social-links { display: flex; align-items: center; gap: 16px; }
+.social-links a { display: inline-flex; color: #899485; transition: color .15s ease; }
+.social-links a:hover, .social-links a:focus-visible { color: #c6f46b; }
+.social-links svg { display: block; width: 17px; height: 17px; fill: currentColor; }
 
 :root[data-theme="orange"] { color-scheme: light; background: #f4f7f7; color: #111; }
 [data-theme="orange"] .topbar, [data-theme="orange"] footer { background: #fff; border-color: #ccc; }
@@ -146,4 +150,6 @@ footer b { color: #c6f46b; }
 [data-theme="orange"] .status-error { color: #a52219; background: #fce8e7; }
 [data-theme="orange"] .curl-message.import-error { color: #a52219; }
 [data-theme="orange"] footer b { color: #a84000; }
-@media (max-width: 760px) { .topbar { padding: 0 5%; gap: 12px; } .topbar-label, .topbar-badge { display: none; } main { width: 90%; } .heading { padding: 40px 0 32px; } .heading-decoration { display: none; } .workspace, .auth-fields { grid-template-columns: 1fr; } .panel { min-height: 360px; } .request-bar { flex-wrap: wrap; } .request-bar input { min-height: 48px; } .request-bar button { width: 100%; min-height: 45px; } .curl-actions { align-items: stretch; flex-direction: column; } }
+[data-theme="orange"] .social-links a { color: #555; }
+[data-theme="orange"] .social-links a:hover, [data-theme="orange"] .social-links a:focus-visible { color: #a84000; }
+@media (max-width: 760px) { .topbar { padding: 0 5%; gap: 12px; } .topbar-label, .topbar-badge { display: none; } main { width: 90%; } .heading { padding: 40px 0 32px; } .heading-decoration { display: none; } .workspace, .auth-fields { grid-template-columns: 1fr; } .panel { min-height: 360px; } .request-bar { flex-wrap: wrap; } .request-bar input { min-height: 48px; } .request-bar button { width: 100%; min-height: 45px; } .curl-actions { align-items: stretch; flex-direction: column; } footer { flex-wrap: wrap; align-items: center; gap: 16px; } .social-links { order: 1; width: 100%; justify-content: center; } }

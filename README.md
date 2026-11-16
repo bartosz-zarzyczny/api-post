@@ -74,3 +74,7 @@ Formats:
 All formats follow redirects and disable cURL URL globbing. For a non-empty body without a `Content-Type` header, the export explicitly uses the application's default `text/plain;charset=UTF-8`; in PowerShell it is passed as `ContentType` instead of a header entry. GET and HEAD requests never include a body. Export rejects URLs that are not HTTP or HTTPS, URLs containing credentials, unsupported methods, invalid header names or values, and values containing NUL characters.
 
 The code represents the request fields, not every detail of tinyjs networking; client configuration and transport behavior may differ. In particular, redirect handling with an explicit request method may differ from the app.
+
+## Find me online
+
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bartosz-zarzyczny)
